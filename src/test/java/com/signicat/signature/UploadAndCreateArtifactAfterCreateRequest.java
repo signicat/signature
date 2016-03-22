@@ -1,3 +1,5 @@
+package com.signicat.signature;
+
 import com.signicat.document.v2.*;
 import org.apache.http.client.fluent.Executor;
 import org.apache.http.entity.ContentType;
@@ -8,13 +10,16 @@ import javax.xml.ws.Service;
 import java.io.File;
 import java.io.IOException;
 
-public class UploadAndCreateRequest {
-
+public class UploadAndCreateArtifactAfterCreateRequest {
     @Test
-    public void if_you_do_not_specify_a_subject_then_anyone_is_allowed_to_view_and_sign_the_document()
-            throws Exception {
+    public void the_artifact_can_be_created_on_demand_after_the_request_has_been_created() throws Exception {
         SdsDocument uploadedDocument = uploadDocument();
         CreateRequestRequest request = getCreateRequest(uploadedDocument);
+        request.getRequest().get(0).getTask().get(0).setSubject(getSubject());
+
+        Authentication authentication = new Authentication();
+        authentication.setArtifact(true); // The artifact will be returned in the response and must be appended to the URL
+        request.getRequest().get(0).getTask().get(0).setAuthentication(authentication);
 
         Service documentService = new DocumentService();
         DocumentEndPoint client = documentService.getPort(DocumentEndPoint.class);
@@ -23,9 +28,24 @@ public class UploadAndCreateRequest {
         String signHereUrl =
                 String.format("https://preprod.signicat.com/std/docaction/demo?request_id=%s&task_id=%s",
                         response.getRequestId().get(0), request.getRequest().get(0).getTask().get(0).getId());
+        String artifactFromResponse = response.getArtifact();
+        // Pretend some time passes here,
+        // and then call createArtifact to
+        // get a new artifact which can
+        // be appended to the URL.
+        CreateArtifactRequest createArtifactRequest = new CreateArtifactRequest();
+        createArtifactRequest.setService("demo");
+        createArtifactRequest.setPassword("Bond007");
+        createArtifactRequest.setRequestId(response.getRequestId().get(0));
+        createArtifactRequest.setTaskId(request.getRequest().get(0).getTask().get(0).getId());
+        String newArtifactCreatedLater = client.createArtifact(createArtifactRequest).getArtifact();
+
+        signHereUrl += "&artifact=" + newArtifactCreatedLater;
         System.out.println(signHereUrl);
         Assert.assertNotNull(response);
-        Assert.assertNull(response.getArtifact());
+        Assert.assertNotNull(artifactFromResponse);
+        Assert.assertNotNull(newArtifactCreatedLater);
+        Assert.assertNotEquals(newArtifactCreatedLater, artifactFromResponse);
         Assert.assertNotNull(response.getRequestId());
     }
 
@@ -45,6 +65,12 @@ public class UploadAndCreateRequest {
         return sdsDocument;
     }
 
+    public Subject getSubject() {
+        Subject subject = new Subject();
+        subject.setId("subj_1"); // Any identifier you'd like
+        subject.setNationalId("1909740939"); // CPR, personnummer, f?dselsnummer etc.
+        return subject;
+    }
 
     private CreateRequestRequest getCreateRequest(SdsDocument documentInSds) {
         CreateRequestRequest createRequestRequest = new CreateRequestRequest();

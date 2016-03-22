@@ -1,3 +1,5 @@
+package com.signicat.signature;
+
 import org.apache.http.client.fluent.Executor;
 import org.apache.http.client.fluent.Request;
 import org.junit.Test;

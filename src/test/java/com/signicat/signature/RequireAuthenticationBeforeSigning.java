@@ -1,6 +1,7 @@
+package com.signicat.signature;
+
 import com.signicat.document.v2.*;
-import com.signicat.document.v2.Request;
-import org.apache.http.client.fluent.*;
+import org.apache.http.client.fluent.Executor;
 import org.apache.http.entity.ContentType;
 import org.junit.Assert;
 import org.junit.Test;
@@ -9,15 +10,16 @@ import javax.xml.ws.Service;
 import java.io.File;
 import java.io.IOException;
 
-public class UploadCreateRequestAndArchive {
+public class RequireAuthenticationBeforeSigning {
     @Test
-    public void you_may_archive_the_original_and_result_in_Signicat_archive_if_you_would_like() throws Exception {
+    public void you_may_choose_to_require_that_the_user_authenticates_before_signing() throws Exception {
         SdsDocument uploadedDocument = uploadDocument();
         CreateRequestRequest request = getCreateRequest(uploadedDocument);
-        // Archive original document
-        ((SdsDocument)request.getRequest().get(0).getDocument().get(0)).setSendToArchive(true);
-        // Archive signed document
-        request.getRequest().get(0).getTask().get(0).getDocumentAction().get(0).setSendResultToArchive(true);
+
+        request.getRequest().get(0).getTask().get(0).setSubject(getSubject());
+        Authentication authentication = new Authentication();
+        authentication.getMethod().add("nemid");
+        request.getRequest().get(0).getTask().get(0).setAuthentication(authentication);
 
         Service documentService = new DocumentService();
         DocumentEndPoint client = documentService.getPort(DocumentEndPoint.class);
@@ -49,6 +51,13 @@ public class UploadCreateRequestAndArchive {
         return sdsDocument;
     }
 
+
+    public Subject getSubject() {
+        Subject subject = new Subject();
+        subject.setId("subj_1"); // Any identifier you'd like
+        subject.setNationalId("1909740939"); // CPR, personnummer, f?dselsnummer etc.
+        return subject;
+    }
 
     private CreateRequestRequest getCreateRequest(SdsDocument documentInSds) {
         CreateRequestRequest createRequestRequest = new CreateRequestRequest();

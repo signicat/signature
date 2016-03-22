@@ -1,3 +1,5 @@
+package com.signicat.signature;
+
 import com.signicat.document.v2.*;
 import org.junit.Assert;
 import org.junit.Test;

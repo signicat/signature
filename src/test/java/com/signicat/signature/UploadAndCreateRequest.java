@@ -1,3 +1,5 @@
+package com.signicat.signature;
+
 import com.signicat.document.v2.*;
 import org.apache.http.client.fluent.Executor;
 import org.apache.http.entity.ContentType;
@@ -8,16 +10,13 @@ import javax.xml.ws.Service;
 import java.io.File;
 import java.io.IOException;
 
-public class RequireAuthenticationBeforeSigning {
+public class UploadAndCreateRequest {
+
     @Test
-    public void you_may_choose_to_require_that_the_user_authenticates_before_signing() throws Exception {
+    public void if_you_do_not_specify_a_subject_then_anyone_is_allowed_to_view_and_sign_the_document()
+            throws Exception {
         SdsDocument uploadedDocument = uploadDocument();
         CreateRequestRequest request = getCreateRequest(uploadedDocument);
-
-        request.getRequest().get(0).getTask().get(0).setSubject(getSubject());
-        Authentication authentication = new Authentication();
-        authentication.getMethod().add("nemid");
-        request.getRequest().get(0).getTask().get(0).setAuthentication(authentication);
 
         Service documentService = new DocumentService();
         DocumentEndPoint client = documentService.getPort(DocumentEndPoint.class);
@@ -26,7 +25,6 @@ public class RequireAuthenticationBeforeSigning {
         String signHereUrl =
                 String.format("https://preprod.signicat.com/std/docaction/demo?request_id=%s&task_id=%s",
                         response.getRequestId().get(0), request.getRequest().get(0).getTask().get(0).getId());
-
         System.out.println(signHereUrl);
         Assert.assertNotNull(response);
         Assert.assertNull(response.getArtifact());
@@ -49,13 +47,6 @@ public class RequireAuthenticationBeforeSigning {
         return sdsDocument;
     }
 
-
-    public Subject getSubject() {
-        Subject subject = new Subject();
-        subject.setId("subj_1"); // Any identifier you'd like
-        subject.setNationalId("1909740939"); // CPR, personnummer, f?dselsnummer etc.
-        return subject;
-    }
 
     private CreateRequestRequest getCreateRequest(SdsDocument documentInSds) {
         CreateRequestRequest createRequestRequest = new CreateRequestRequest();

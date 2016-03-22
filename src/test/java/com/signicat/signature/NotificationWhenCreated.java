@@ -1,3 +1,5 @@
+package com.signicat.signature;
+
 import com.signicat.document.v2.*;
 import org.apache.http.client.fluent.Executor;
 import org.apache.http.entity.ContentType;
@@ -8,16 +10,37 @@ import javax.xml.ws.Service;
 import java.io.File;
 import java.io.IOException;
 
-public class RedirectAfterSigning {
+public class NotificationWhenCreated {
     @Test
-    public void you_have_control_over_where_the_user_is_sent_after_signing_or_cancelling() throws Exception {
+    public void notifications_can_be_sent_when_the_document_order_status_changes() throws Exception {
         SdsDocument uploadedDocument = uploadDocument();
         CreateRequestRequest request = getCreateRequest(uploadedDocument);
 
-        request.getRequest().get(0).getTask().get(0)
-                .setOnTaskCancel("http://preprod.signicat.com/sig/cancel.html?requestId=${requestId}&taskId=${taskId}");
-        request.getRequest().get(0).getTask().get(0)
-                .setOnTaskComplete("https://preprod.signicat.com/sig/complete.html?requestId=${requestId}&taskId=${taskId}");
+        // You can have request level notifications
+        // for example to notify your system when
+        // a request has been completed
+        Notification requestNotification = new Notification();
+        requestNotification.setNotificationId("req_not_1");
+        requestNotification.setRecipient("https://labs.signicat.com/callback/");
+        requestNotification.setMessage("Missing message");
+        requestNotification.setType(NotificationType.URL);
+        request.getRequest().get(0).getNotification().add(requestNotification);
+
+        // And you can have task level notifications,
+        // for example for notifying someone that
+        // a document needs to be signed (or has been signed)
+        Notification taskNotification = new Notification();
+        taskNotification.setHeader("Attention required");
+        taskNotification.setMessage("There are documents waiting for you to sign them. Please visit ${taskUrl}.");
+        taskNotification.setNotificationId("req_not_2");
+        taskNotification.setRecipient("support@signicat.com");
+        taskNotification.setSender("noreply@signicat.com");
+        taskNotification.setType(NotificationType.EMAIL);
+        Schedule schedule = new Schedule();
+        schedule.setStateIs(TaskStatus.CREATED);
+        taskNotification.getSchedule().add(schedule);
+
+        request.getRequest().get(0).getTask().get(0).getNotification().add(taskNotification);
 
         Service documentService = new DocumentService();
         DocumentEndPoint client = documentService.getPort(DocumentEndPoint.class);

@@ -1,3 +1,5 @@
+package com.signicat.signature;
+
 import com.signicat.document.v2.*;
 import org.apache.http.client.fluent.Executor;
 import org.apache.http.entity.ContentType;
@@ -12,6 +14,10 @@ import static spark.Spark.get;
 import static spark.Spark.post;
 
 public class SignatureSample {
+
+    public static final String SIGNICAT_URL = "https://preprod.signicat.com";
+    public static final String SERVICE = "demo";
+    public static final String METHOD = "nemid-sign";
 
     public static void main(String[] args) {
         // Print all HTTP request/response to system.out
@@ -45,10 +51,10 @@ public class SignatureSample {
     private static String uploadDocument(byte[] file) throws IOException {
         // Upload file to SDS
         org.apache.http.client.fluent.Request request = org.apache.http.client.fluent.Request
-                .Post("https://preprod.signicat.com/doc/demo/sds")
+                .Post(SIGNICAT_URL + "/doc/" + SERVICE + "/sds")
                 .bodyByteArray(file, ContentType.create("application/pdf"));
         return Executor.newInstance()
-                .auth("demo", "Bond007")  // Basic auth
+                .auth(SERVICE, "Bond007")  // Basic auth
                 .execute(request)
                 .returnContent().asString();
     }
@@ -68,7 +74,7 @@ public class SignatureSample {
         task.getDocumentAction().add(documentAction);
 
         Signature signature = new Signature();
-        signature.getMethod().add("nemid-sign");
+        signature.getMethod().add(METHOD);
         task.getSignature().add(signature);
 
         SdsDocument sdsDocument = new SdsDocument();
@@ -78,12 +84,12 @@ public class SignatureSample {
 
         Request request = new Request();
         request.setLanguage("da");
-        request.setProfile("demo");
+        request.setProfile(SERVICE);
         request.getTask().add(task);
         request.getDocument().add(sdsDocument);
 
         CreateRequestRequest createRequestRequest = new CreateRequestRequest();
-        createRequestRequest.setService("demo");
+        createRequestRequest.setService(SERVICE);
         createRequestRequest.setPassword("Bond007");
         createRequestRequest.getRequest().add(request);
 
@@ -91,14 +97,14 @@ public class SignatureSample {
         CreateRequestResponse createRequestResponse = documentEndPoint.createRequest(createRequestRequest);
 
         // Request returned requestId - now redirect to signicat for signing
-        return String.format("https://preprod.signicat.com/std/docaction/demo?request_id=%s&task_id=%s",
+        return String.format(SIGNICAT_URL + "/std/docaction/" + SERVICE + "?request_id=%s&task_id=%s",
                 createRequestResponse.getRequestId().get(0), createRequestRequest.getRequest().get(0).getTask().get(0).getId());
     }
 
     private static String checkStatus(String requestId, String taskId, String docReference) {
         GetStatusRequest request = new GetStatusRequest();
         request.setPassword("Bond007");
-        request.setService("demo");
+        request.setService(SERVICE);
         request.getRequestId().add(requestId);
 
         DocumentEndPoint documentEndPoint = getDocumentEndPoint();
@@ -106,7 +112,7 @@ public class SignatureSample {
 
         if (taskStatusInfo.getTaskStatusInfo().get(0).getTaskStatus() == TaskStatus.COMPLETED) {
             // Signature completed - return url to signed document
-            return String.format("https://preprod.signicat.com/doc/demo/order/%s/%s/%s/sdo", requestId, taskId, docReference);
+            return String.format(SIGNICAT_URL + "/doc/" + SERVICE + "/order/%s/%s/%s/sdo", requestId, taskId, docReference);
         }
         return null;
     }
