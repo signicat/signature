@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Signicat Signature Demo</title>
+    <script src="http://code.jquery.com/jquery-1.12.0.min.js"></script>
+
+    <script type="application/javascript">
+        function getParameterByName(name) {
+            var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                    results = regex.exec(window.location.href);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, " "));
+        }
+
+        $(document).ready(function () {
+            var downloadUrl = getParameterByName("downloadUrl");
+            if (downloadUrl !== null) {
+                $("#download").show();
+                $("#downloadUrl").prop("href", downloadUrl);
+            }
+
+            $("#uploadbutton").click(function () {
+                var fd = new FormData();
+                fd.append("fileToUpload", $('#file')[0].files[0]);
+
+                $.ajax({
+                    type: "POST",
+                    url: "/upload",
+                    data: fd,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        $("#document_id").val(response.replace(/['"]+/g, ''));
+                        $("#signdiv").show();
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="upload">
+        Upload file: <input id="file" type="file" accept="application/pdf">
+        <input id="uploadbutton" type="button" value="Upload"/>
+    </div>
+
+    <div id="signdiv" style="display: none">
+        <form action="/sign">
+            Document id: <input type="text" name="document_id" id="document_id">
+            <input type="submit" value="Sign">
+        </form>
+    </div>
+
+    <div id="download" style="display: none">
+        <a id="downloadUrl" href="">Download signed document</a>
+    </div>
+</body>
+</html>
