@@ -21,7 +21,7 @@ import static org.junit.Assert.assertTrue;
 
 public class DownloadSds {
     @Test
-    public void uploading_a_pdf_to_sds_using_apache_http_client() throws IOException {
+    public void downloading_a_pdf_to_sds_using_apache_http_client() throws IOException {
         // Create the client and set it up for basic authentication
         AuthScope authScope = new AuthScope("preprod.signicat.com", 443);
         Credentials credentials = new UsernamePasswordCredentials("demo", "Bond007");
