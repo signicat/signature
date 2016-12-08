@@ -65,6 +65,14 @@
                                         <extraarg>-client</extraarg>
                                     </extraargs>
                                 </wsdlOption>
+                                <wsdlOption>
+                                    <wsdl>https://preprod.signicat.com/ws/sealingservice-v1?wsdl</wsdl>
+                                    <extraargs>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>https://id.signicat.com/definitions/wsdl/Sealing-v1=com.signicat.sealing.v1</extraarg>
+                                        <extraarg>-client</extraarg>
+                                    </extraargs>
+                                </wsdlOption>
                             </wsdlOptions>
                         </configuration>
                         <goals>
