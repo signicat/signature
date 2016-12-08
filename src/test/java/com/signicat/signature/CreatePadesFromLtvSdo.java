@@ -30,7 +30,7 @@ public class CreatePadesFromLtvSdo {
 
         DocumentId documentId = new DocumentId();
         documentId.setUriDocumentId(resultSdoUri);
-        request.getSdoOrSdoExtended().add(documentId);
+        request.getSdoExtendedOrSdo().add(documentId);
         request.setSendResultToArchive(false);
 
         CreatePackageResponse createPackageResponse = client.createPackage(request);

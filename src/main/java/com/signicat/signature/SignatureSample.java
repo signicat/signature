@@ -1,6 +1,6 @@
 package com.signicat.signature;
 
-import com.signicat.document.v2.*;
+import com.signicat.document.v3.*;
 import org.apache.http.client.fluent.Executor;
 import org.apache.http.entity.ContentType;
 import spark.Spark;

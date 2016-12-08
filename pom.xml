@@ -50,10 +50,10 @@
                             <sourceRoot>${project.build.directory}/generated-sources/cxf</sourceRoot>
                             <wsdlOptions>
                                 <wsdlOption>
-                                    <wsdl>https://preprod.signicat.com/ws/documentservice-v2?wsdl</wsdl>
+                                    <wsdl>https://preprod.signicat.com/ws/documentservice-v3?wsdl</wsdl>
                                     <extraargs>
                                         <extraarg>-p</extraarg>
-                                        <extraarg>https://id.signicat.com/definitions/wsdl/Document-v2=com.signicat.document.v2</extraarg>
+                                        <extraarg>https://id.signicat.com/definitions/wsdl/Document-v3=com.signicat.document.v3</extraarg>
                                         <extraarg>-client</extraarg>
                                     </extraargs>
                                 </wsdlOption>

@@ -1,7 +1,7 @@
 package com.signicat.signature;
 
-import com.signicat.document.v2.*;
-import com.signicat.document.v2.Request;
+import com.signicat.document.v3.*;
+import com.signicat.document.v3.Request;
 import org.apache.http.client.fluent.*;
 import org.apache.http.entity.ContentType;
 import org.junit.Assert;
