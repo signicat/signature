@@ -61,7 +61,7 @@ public class SealDocument {
 
         DocumentId documentId = new DocumentId();
         documentId.setSdsDocumentId(sdsDocumentId);
-        sealRequest.setSdo(documentId);
+        sealRequest.setInputdocument(documentId);
 
         return sealRequest;
     }
