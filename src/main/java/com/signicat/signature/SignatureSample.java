@@ -73,8 +73,12 @@ public class SignatureSample {
         documentAction.setDocumentRef(docReference);
         task.getDocumentAction().add(documentAction);
 
+        Method signMethod = new Method();
+        signMethod.setValue(METHOD);
+
         Signature signature = new Signature();
-        signature.getMethod().add(METHOD);
+        signature.setResponsive(true);
+        signature.getMethod().add(signMethod);
         task.getSignature().add(signature);
 
         SdsDocument sdsDocument = new SdsDocument();

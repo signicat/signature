@@ -17,8 +17,13 @@ public class CreateRequestWithSubject {
     public void how_to_create_a_simple_document_order_with_one_subject_and_one_document_using_Danish_NemID()
             throws Exception
     {
+        System.setProperty("com.sun.xml.ws.transport.http.client.HttpTransportPipe.dump", "true");
+        System.setProperty("com.sun.xml.internal.ws.transport.http.client.HttpTransportPipe.dump", "true");
+        System.setProperty("com.sun.xml.ws.transport.http.HttpAdapter.dump", "true");
+        System.setProperty("com.sun.xml.internal.ws.transport.http.HttpAdapter.dump", "true");
+
         // The document id is what you get in response when uploading a document to the SDS
-        String documentId = "17032016pvd9kv2k2pyorq8zniq3x01h2dircxhw6hwjx2i5i9ebjn0a6";
+        String documentId = "16022017bizpqo768j2a786et75hign2pa6aahb3nxxo80ap8q0s2zdis";
 
         CreateRequestRequest createRequestRequest = new CreateRequestRequest();
         createRequestRequest.setPassword("Bond007");
@@ -49,8 +54,12 @@ public class CreateRequestWithSubject {
         documentAction.setDocumentRef("doc_1"); // Any identifier you'd like
         task.getDocumentAction().add(documentAction);
 
+        Method signMethod = new Method();
+        signMethod.setValue("nemid-sign"); // The name of the signature method(s)
+
         Signature signature = new Signature();
-        signature.getMethod().add("nemid-sign"); // The name of the signature method(s)
+        signature.setResponsive(true);
+        signature.getMethod().add(signMethod);
         task.getSignature().add(signature);
 
         request.getTask().add(task);

@@ -93,8 +93,12 @@ public class NotificationWhenCreated {
         documentAction.setDocumentRef("doc_1"); // Any identifier you'd like
         task.getDocumentAction().add(documentAction);
 
+        Method signMethod = new Method();
+        signMethod.setValue("nemid-sign"); // The name of the signature method(s)
+
         Signature signature = new Signature();
-        signature.getMethod().add("nemid-sign"); // The name of the signature method(s)
+        signature.setResponsive(true);
+        signature.getMethod().add(signMethod);
         task.getSignature().add(signature);
 
         request.getTask().add(task);
