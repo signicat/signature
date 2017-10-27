@@ -5,6 +5,7 @@ import org.apache.http.client.fluent.Executor;
 import org.apache.http.entity.ContentType;
 import spark.Spark;
 
+import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Service;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -123,7 +124,11 @@ public class SignatureSample {
 
     private static DocumentEndPoint getDocumentEndPoint() {
         Service documentService = new DocumentService();
-        return documentService.getPort(DocumentEndPoint.class);
+        DocumentEndPoint port = documentService.getPort(DocumentEndPoint.class);
+        BindingProvider bp = (BindingProvider) port;
+        bp.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, SIGNICAT_URL + "/ws/documentservice-v3");
+
+        return port;
     }
 
     public static String urlEncode(String s) {
