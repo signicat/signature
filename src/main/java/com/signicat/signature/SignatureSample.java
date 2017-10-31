@@ -25,10 +25,11 @@ public class SignatureSample {
         // Print all HTTP request/response to system.out
         System.setProperty("com.sun.xml.internal.ws.transport.http.client.HttpTransportPipe.dump", "true");
 
-        // Setting up 2-way SSL
-        System.setProperty("javax.net.ssl.keyStore","src/main/resources/web-service-keystore.jks");
-        System.setProperty("javax.net.ssl.keyStorePassword","changeit");
-        System.setProperty("javax.net.ssl.keyStoreType", "JKS");
+        // Setting up 2-way SSL (https://support.signicat.com/display/S2/Setting+up+2-way+SSL%2C+Java)
+        // Note: The certificate included is a development certificate - you will have to replace with your own...
+        System.setProperty("javax.net.ssl.keyStore","src/main/resources/web-service-certificate.p12");
+        System.setProperty("javax.net.ssl.keyStorePassword","mXp9uMWs9sUd");
+        System.setProperty("javax.net.ssl.keyStoreType", "PKCS12");
 
         Spark.staticFileLocation("/public");
 

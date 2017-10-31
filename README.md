@@ -18,3 +18,6 @@ The example uses the *demo* service on *preprod.signicat.com*, and authenticatio
 See [Get test users and test information](https://support.signicat.com/display/S2/Get+test+users+and+test+information) for more information about obtaining test credentials.
 
 For general information about the signature service, please refer to [Getting started with signatures](https://support.signicat.com/display/S2/Getting+started+with+signatures)
+
+## 2-Way SSL
+For information about the process of setting up 2-way ssl, please refer to [Setting up 2-way SSL, Java](https://support.signicat.com/display/S2/Setting+up+2-way+SSL%2C+Java). 
