@@ -18,7 +18,7 @@
             var downloadUrl = getParameterByName("downloadUrl");
             if (downloadUrl !== null) {
                 $("#download").show();
-                $("#downloadUrl").prop("href", downloadUrl);
+                $("#downloadUrl").prop("href", "/download?order=" + downloadUrl);
             }
 
             $("#uploadbutton").click(function () {

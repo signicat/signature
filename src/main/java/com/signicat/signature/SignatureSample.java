@@ -1,6 +1,7 @@
 package com.signicat.signature;
 
 import com.signicat.document.v3.*;
+
 import org.apache.http.client.fluent.Executor;
 import org.apache.http.entity.ContentType;
 import spark.Spark;
@@ -45,6 +46,20 @@ public class SignatureSample {
             String taskId = request.queryParams("taskId");
             String downloadUrl = urlEncode(checkStatus(requestId, taskId, docReference));
             response.redirect("/index.html?downloadUrl=" + downloadUrl);
+            return null;
+        });
+
+        get("/download", (request, response) -> {
+            String orderUrl = request.queryParams("order");
+            org.apache.http.client.fluent.Request req = org.apache.http.client.fluent.Request
+                    .Get(orderUrl);
+            byte[] bytes = Executor.newInstance().auth(SERVICE, "Bond007")
+            .execute(req).returnContent().asBytes();
+            response.header("Content-Type", "application/pdf");
+            response.header("Content-Disposition", "attachment;filename=\"file.pdf\"");
+            response.raw().getOutputStream().write(bytes);
+            response.raw().getOutputStream().flush();
+            response.raw().getOutputStream().close();
             return null;
         });
     }
