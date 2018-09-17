@@ -20,4 +20,4 @@ See [Get test users and test information](https://support.signicat.com/display/S
 For general information about the signature service, please refer to [Getting started with signatures](https://support.signicat.com/display/S2/Getting+started+with+signatures)
 
 ## 2-Way SSL
-For information about the process of setting up 2-way ssl, please refer to [Setting up 2-way SSL, Java](https://support.signicat.com/display/S2/Setting+up+2-way+SSL%2C+Java). 
+For information about the process of setting up 2-way ssl, please refer to [Setting up 2-way SSL, Java](https://developer.signicat.com/documentation/ssl/setting-up-2-way-ssl-java/). 
